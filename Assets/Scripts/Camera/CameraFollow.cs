@@ -8,7 +8,7 @@ public class CameraFollow : MonoBehaviour
     public float smoothSpeed = 5; // 追従速度
 
     [Tooltip("カメラのオフセット X,Y")]
-    public Vector3 offset = new Vector3(2, 0, -10);
+    public Vector3 offset = new Vector3(2, 0, -20);
 
     void LateUpdate()
     {
