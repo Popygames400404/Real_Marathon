@@ -21,3 +21,5 @@ UserSettings/
 *.svd
 
 .DS_Store
+.vs/
+*.vsconfig
