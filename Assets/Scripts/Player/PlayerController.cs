@@ -1,35 +1,35 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-// Rigidbody2D ‚ğ•K‚¸ƒAƒ^ƒbƒ`‚³‚¹‚ééŒ¾
+// Rigidbody2D ï¿½ï¿½Kï¿½ï¿½ï¿½Aï¿½^ï¿½bï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½éŒ¾
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour
 {
     [Header("Speed Settings")]
-    [Tooltip("’ÊíEÅ’á‘¬“xi‚±‚ê‚æ‚è’x‚­‚È‚ç‚È‚¢j")]
+    [Tooltip("ï¿½Êï¿½Eï¿½Å’á‘¬ï¿½xï¿½iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½È‚ï¿½È‚ï¿½ï¿½j")]
     public float baseSpeed = 2f;
-    [Tooltip("‰Á‘¬‚ÌÅ‚‘¬“x")]
+    [Tooltip("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌÅï¿½ï¿½ï¿½ï¿½x")]
     public float maxSpeed = 6f;
-    [Tooltip("DƒL[‚Å‚Ì‰Á‘¬“xi’PˆÊF‘¬“x/•bj")]
+    [Tooltip("Dï¿½Lï¿½[ï¿½Å‚Ì‰ï¿½ï¿½ï¿½ï¿½xï¿½iï¿½Pï¿½ÊFï¿½ï¿½ï¿½x/ï¿½bï¿½j")]
     public float acceleration = 4f;
-    [Tooltip("AƒL[‚Å‚ÌŒ¸‘¬“xi’PˆÊF‘¬“x/•bj")]
+    [Tooltip("Aï¿½Lï¿½[ï¿½Å‚ÌŒï¿½ï¿½ï¿½ï¿½xï¿½iï¿½Pï¿½ÊFï¿½ï¿½ï¿½x/ï¿½houhou bï¿½j")]
     public float deceleration = 2f;
 
-    [Header("Stamina / ƒXƒ^ƒ~ƒi")]
-    [Tooltip("PlayerStamina ƒXƒNƒŠƒvƒg‚ğ Inspector ‚ÅŠ„“–‚Ä‚é")]
-    public PlayerStamina stamina;                 // © •ÏX•”•ªFPlayerStamina ‚É“‡
-    [Tooltip("ƒXƒ^ƒ~ƒiÁ”ï”{—¦")]
-    public float staminaDrainMultiplier = 1f;     // © •ÏX•”•ªFPlayerStamina ‚Æ˜AŒg
+    [Header("Stamina / ï¿½Xï¿½^ï¿½~ï¿½i")]
+    [Tooltip("PlayerStamina ï¿½Xï¿½Nï¿½ï¿½ï¿½vï¿½gï¿½ï¿½ Inspector ï¿½ÅŠï¿½ï¿½ï¿½ï¿½Ä‚ï¿½")]
+    public PlayerStamina stamina;                 // ï¿½ï¿½ ï¿½ÏXï¿½ï¿½ï¿½ï¿½ï¿½FPlayerStamina ï¿½É“ï¿½ï¿½ï¿½
+    [Tooltip("ï¿½Xï¿½^ï¿½~ï¿½iï¿½ï¿½ï¿½ï¿½{ï¿½ï¿½")]
+    public float staminaDrainMultiplier = 1f;     // ï¿½ï¿½ ï¿½ÏXï¿½ï¿½ï¿½ï¿½ï¿½FPlayerStamina ï¿½Æ˜Aï¿½g
 
     [Header("Controls")]
     public KeyCode accelKey = KeyCode.D;
     public KeyCode decelKey = KeyCode.A;
-    public KeyCode jamKey = KeyCode.J;            // «—ˆƒWƒƒƒ}ƒL[—p
+    public KeyCode jamKey = KeyCode.J;            // ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½}ï¿½Lï¿½[ï¿½p
 
     [Header("Behavior")]
-    public bool applyVelocityInFixed = true;
+    public bool applyVelocityInFixed = true;//ï¿½vï¿½Zï¿½ï¿½ï¿½eï¿½Ì‚Ô‚ï¿½ï¿½ï¿½ï¿½İ•ï¿½ï¿½Xï¿½Cï¿½bï¿½`
 
     private Rigidbody2D rb;
     private float nextFrameTargetSpeed;
@@ -40,33 +40,37 @@ public class PlayerController : MonoBehaviour
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
 
-        rb.velocity = new Vector2(baseSpeed, 0f);
+        rb.velocity = new Vector2(baseSpeed, 0f);//newï¿½Ì•Kï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ğ’†B
         nextFrameTargetSpeed = baseSpeed;
     }
 
     void Update()
     {
-        // ===== ƒXƒ^ƒ~ƒi©‘R‰ñ•œ =====
+        // ===== ï¿½Xï¿½^ï¿½~ï¿½iï¿½ï¿½ï¿½Rï¿½ï¿½ =====
         if (stamina != null)
         {
-            // DƒL[‚ğ‰Ÿ‚µ‚Ä‚¢‚È‚¢‚¾‚¯‰ñ•œ
+            // Dï¿½Lï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             if (!Input.GetKey(accelKey))
             {
-                stamina.Regenerate(stamina.regeneRate * Time.deltaTime);
+                stamina.Regenerate(stamina.regeneRate * Time.deltaTime);//Regenerateï¿½Ìƒtï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ë‘ï¿½ï¿½ï¿½Time.deltaTimeï¿½Å‰ï¿½ï¿½ï¿½ï¿½B
+                //stamina.regeneRate=ï¿½Pï¿½bï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‰ñ•œ—ï¿½
+
             }
         }
+        //PlayerStamina.csï¿½Ë‘ï¿½ï¿½Óï¿½--------------------------------------------------------------------------------
 
 
+        //// ===== ï¿½vï¿½Zï¿½ï¿½ï¿½eï¿½Ì‚Ô‚ï¿½ï¿½ï¿½ï¿½İ•ï¿½ =====
         float computedSpeed = ComputeSpeedFromInput();
 
-        if (applyVelocityInFixed)
-            nextFrameTargetSpeed = computedSpeed;
+        if (applyVelocityInFixed==true)
+            nextFrameTargetSpeed = computedSpeed; //ï¿½ï¿½ï¿½ï¿½Updateï¿½iï¿½jï¿½ÅŒvï¿½Zï¿½ï¿½ï¿½eï¿½ï¿½ï¿½uï¿½`ï¿½ï¿½ï¿½ŞB
         else
-            rb.velocity = new Vector2(computedSpeed, 0f);
+            rb.velocity = new Vector2(computedSpeed, 0f); //ï¿½ï¿½ï¿½ï¿½Fixedï¿½iï¿½jï¿½ÉŒvï¿½Zï¿½ï¿½ï¿½eï¿½ï¿½ï¿½uï¿½`ï¿½ï¿½ï¿½ŞB 
 
         HandleJamInput();
         Debug.Log("Speed: " + rb.velocity.x);
-
+        
     }
 
     void FixedUpdate()
@@ -78,62 +82,63 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// “ü—Í‚ÉŠî‚Ã‚«‘¬“xŒvZ{ƒXƒ^ƒ~ƒiÁ”ï
+    /// ï¿½ï¿½ï¿½Í‚ÉŠï¿½Ã‚ï¿½ï¿½ï¿½ï¿½xï¿½vï¿½Zï¿½{ï¿½Xï¿½^ï¿½~ï¿½iï¿½ï¿½ï¿½ï¿½
     /// </summary>
     private float ComputeSpeedFromInput()
     {
-        float currentSpeed = rb.velocity.x;
+        float currentSpeed = rb.velocity.x;//ï¿½ï¿½ï¿½İ‚ï¿½Speedï¿½ï¿½ï¿½æ“¾ï¿½B
 
-        // AƒL[‚ÅŒ¸‘¬iƒXƒ^ƒ~ƒiÁ”ï‚È‚µj
+        // Aï¿½Lï¿½[ï¿½ÅŒï¿½ï¿½ï¿½ï¿½iï¿½Xï¿½^ï¿½~ï¿½iï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½jï¿½ï¿½ï¿½İ‘ï¿½ï¿½x-ï¿½ï¿½ï¿½ï¿½ï¿½l
         if (Input.GetKey(decelKey))
-            currentSpeed -= deceleration * Time.deltaTime;
+            currentSpeed -= deceleration * Time.deltaTime;//ï¿½ï¿½ï¿½ï¿½ï¿½ÅŒï¿½ï¿½ï¿½
 
-        // DƒL[‚Å‰Á‘¬iƒXƒ^ƒ~ƒi‚ªc‚Á‚Ä‚¢‚éê‡‚Ì‚İj
+        // Dï¿½Lï¿½[ï¿½Å‰ï¿½ï¿½ï¿½ï¿½iï¿½Xï¿½^ï¿½~ï¿½iï¿½ï¿½ï¿½cï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡ï¿½Ì‚İjï¿½ï¿½ï¿½İ‘ï¿½ï¿½x+ï¿½ï¿½ï¿½ï¿½ï¿½l
         if (Input.GetKey(accelKey))
         {
             if (stamina == null)
             {
-                // PlayerStamina –¢İ’è‚ÍƒfƒoƒbƒO—p‚É‰Á‘¬
+                // PlayerStamina ï¿½ï¿½ï¿½İ’èï¿½Íƒfï¿½oï¿½bï¿½Oï¿½pï¿½É‰ï¿½ï¿½ï¿½
                 currentSpeed += acceleration * Time.deltaTime;
             }
             else
             {
-                if (!stamina.IsExhausted)
+                if (!stamina.IsExhausted)//ï¿½ï¿½Jï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡
                 {
-                    currentSpeed += acceleration * Time.deltaTime;
-
-                    // ƒXƒ^ƒ~ƒiÁ”ïiPlayerStamina ‘¤‚Ì drainRate ‚ğg—pj © •ÏX•”•ª
+                    currentSpeed += acceleration * Time.deltaTime;//ï¿½ï¿½ï¿½ï¿½ï¿½Å‰ï¿½ï¿½ï¿½
+                  
+                    // ï¿½Xï¿½^ï¿½~ï¿½iï¿½ï¿½ï¿½ï¿½iPlayerStamina ï¿½ï¿½ï¿½ï¿½ drainRate ï¿½ï¿½ï¿½gï¿½pï¿½j ï¿½ï¿½ ï¿½ÏXï¿½ï¿½ï¿½ï¿½
                     float drain = stamina.drainRate * staminaDrainMultiplier * Time.deltaTime;
                     stamina.Drain(drain);
                 }
-                // Exhausted ‚È‚ç‰Á‘¬•s‰Â
+                // Exhausted ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½
             }
         }
+        //ï¿½ÊƒXï¿½Nï¿½ï¿½ï¿½vï¿½gï¿½Ë‘ï¿½ï¿½Óï¿½--------------------------------------------------------------------------------
 
-        // ‘¬“xƒNƒ‰ƒ“ƒv
+        // ï¿½ï¿½ï¿½xï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½v(ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½)ï¿½ï¿½ï¿½İ‘ï¿½ï¿½xx = ï¿½ï¿½ï¿½İ‘ï¿½ï¿½xï¿½ï¿½ï¿½Å’á‘¬ï¿½xï¿½ÆÅï¿½ï¿½ï¿½ï¿½xï¿½ÌŠÔ‚ï¿½Clampï¿½iï¿½ï¿½ï¿½İ‚ï¿½ï¿½Şj
         currentSpeed = Mathf.Clamp(currentSpeed, baseSpeed, maxSpeed);
 
-        return currentSpeed;
+        return currentSpeed; //ComputeSpeedFromInput()ï¿½ÌÅï¿½ï¿½ï¿½CurrentSpeedï¿½ÉŒvï¿½Zï¿½ï¿½ÌŒï¿½ï¿½İ‘ï¿½ï¿½xï¿½ï¿½nï¿½ï¿½ï¿½B
     }
 
     /// <summary>
-    /// «—ˆ‚Ìuƒ‰ƒCƒoƒ‹‚ğƒWƒƒƒ}‚·‚évƒAƒNƒVƒ‡ƒ“‚Ìó‚¯Œû
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½Ìuï¿½ï¿½ï¿½Cï¿½oï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½}ï¿½ï¿½ï¿½ï¿½vï¿½Aï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ìó‚¯Œï¿½
     /// </summary>
     private void HandleJamInput()
     {
         if (Input.GetKeyDown(jamKey))
         {
-            Debug.Log("[Jam] ƒWƒƒƒ}ƒAƒNƒVƒ‡ƒ“”­“®i–¢À‘•j");
+            Debug.Log("[Jam] ï¿½Wï¿½ï¿½ï¿½}ï¿½Aï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½j");
         }
     }
 
-    // ŠO•”‚©‚çŒ»İ‘¬“x‚ğæ“¾iƒwƒ‹ƒp[j
+    // ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½çŒ»ï¿½İ‘ï¿½ï¿½xï¿½ï¿½ï¿½æ“¾ï¿½iï¿½wï¿½ï¿½ï¿½pï¿½[ï¿½j
     public float GetCurrentSpeed()
     {
         return rb != null ? rb.velocity.x : 0f;
     }
 
-    // ŠO•”‚©‚ç–Ú•W‘¬“x‚ğ‹­§ƒZƒbƒgiƒfƒoƒbƒO—pj
+    // ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú•Wï¿½ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½gï¿½iï¿½fï¿½oï¿½bï¿½Oï¿½pï¿½j
     public void SetSpeed(float target)
     {
         float clamped = Mathf.Clamp(target, baseSpeed, maxSpeed);
@@ -142,4 +147,19 @@ public class PlayerController : MonoBehaviour
         else if (rb != null)
             rb.velocity = new Vector2(clamped, 0f);
     }
+
+    //ï¿½ï¿½`:
+    //    ï¿½vï¿½Zï¿½ï¿½ï¿½pï¿½ï¿½Updateï¿½ï¿½Fixedï¿½iï¿½jï¿½Ö‚Ì‚Ô‚ï¿½ï¿½ï¿½ï¿½İ•ï¿½ï¿½Xï¿½Cï¿½bï¿½`(applyVelocityInFixe)
+    //    ï¿½ï¿½
+    // Startï¿½iï¿½j 
+    //    nextframespeedï¿½ï¿½BaseSpeed
+    //    ï¿½ï¿½
+    //ComputeSpeedFromInput()
+    //    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ï¿½ï¿½ï¿½ï¿½ê‚¼ï¿½ï¿½vï¿½Zï¿½B ï¿½Æ‹ï¿½ï¿½É‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ÌƒXï¿½^ï¿½~ï¿½iï¿½ï¿½ï¿½ï¿½Ê‚ï¿½PlayerStaminacsï¿½Æ˜Aï¿½gï¿½ï¿½ï¿½ÄŒvï¿½Z
+    //    ï¿½ï¿½
+    // Updateï¿½iï¿½j 
+    //    ï¿½vï¿½Zï¿½ï¿½ï¿½Ê‚ï¿½applyVelocityInFixedï¿½É‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nextframespeedï¿½É‚Ô‚ï¿½ï¿½ï¿½ï¿½ï¿½
+    //    ï¿½ï¿½
+    // Fixedï¿½iï¿½j
+    //    nextframespeedï¿½ÉŠiï¿½[ï¿½ï¿½ï¿½ê‚½ï¿½vï¿½Zï¿½ï¿½ï¿½Ê‚É]ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½vï¿½Zï¿½B
 }

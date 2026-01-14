@@ -8,25 +8,25 @@ public class PlayerStamina : MonoBehaviour
 {
     [Header("Stamina Settings")]
     public float maxStamina = 100f;
-    [Tooltip("���R�񕜑��x�i1�b������j")]
-    public float regeneRate = 8f;
-    [Tooltip("�������s���̏���x�i1�b������j")]
+    [Tooltip("自然回復速度（1秒あたり）")]
+    public float regeneRate = 8f;//← 注意: regeneRate が PlayerController で使用されます
+    [Tooltip("高速走行時の消費速度（1秒あたり）")]
     public float drainRate = 20f;
 
     [Header("Exhaustion")]
-    [Tooltip("�X�^�~�i�������ȉ��Ŕ�J��Ԃƌ��Ȃ�")]
-    public float exhaustionThreshold = 2f;
-    [Tooltip("��J���̍Œᑬ�x�{���i0�`1�j")]
+    [Tooltip("スタミナがここ以下で疲労状態とみなす")]
+    public float exhaustionThreshold = 2f;　//疲労境界線
+    [Tooltip("疲労中の最低速度倍率（0～1）")]
     public float exhaustedSpeedMultiplier = 0.5f;
 
     [Header("UI")]
-    public Slider staminaSlider; // Inspector�Ŋ�����
+    public Slider staminaSlider; // Inspectorで割り当て
 
-    private float currentStamina;
+    public float currentStamina;
     public bool IsExhausted { get; private set; }
 
-    public event Action OnExhausted;      // ��J�������C�x���g
-    public event Action OnRecovered;      // �񕜂��Ĕ�J�������C�x���g
+    public event Action OnExhausted;      // 疲労発生時イベント
+    public event Action OnRecovered;      // 回復して疲労解除時イベント
 
     void Awake()
     {
@@ -36,37 +36,45 @@ public class PlayerStamina : MonoBehaviour
 
     void Update()
     {
-        // UI�𖈃t���[���X�V�iUI���ׂ͏������̂�OK�j
+        //  UIを毎フレーム更新
         UpdateUI();
     }
 
-    public float GetStaminaNormalized() => Mathf.Clamp01(currentStamina / maxStamina);
+    public float GetStaminaNormalized() => Mathf.Clamp01(currentStamina / maxStamina);//正規化
+    //計算結果が０未満であれば0に、1を超えたら1にする。
+//| currentStamina | maxStamina | 結果|
+//| -------------- | ---------- | --- |
+//| 100            | 100        | 1.0 |     currentStamina/maxStamina
+//| 50             | 100        | 0.5 |      =      50    /    100   =0.5
+//| 0              | 100        | 0.0 |      =     100    /    100   =1.0     割合に変換している。
 
-    public float GetCurrentStamina() => currentStamina;
 
-    // drainAmount�͕b������̏���ʂł͂Ȃ��A���� *Time.deltaTime* ������������̒l��z�肵�ēn���̂��B
+    public float GetCurrentStamina() => currentStamina;//現在は使われていない。
+
+    // スタミナ消費　PlayerContlloler.csでタイミングを管理。
     public void Drain(float amount)
     {
         if (amount <= 0f) return;
         currentStamina = Mathf.Max(0f, currentStamina - amount);
+        //PlayerController.cs依存箇所--------------------------------------------------------------------------------
         CheckExhaustion();
         UpdateUI();
     }
 
-    public void Regenerate(float amount)//�X�^�~�i��
+    public void Regenerate(float amount)//
     {
-        if (amount <= 0f) return;
-        float prev = currentStamina;
-        currentStamina = Mathf.Min(maxStamina, currentStamina + amount);
-        if (IsExhausted && currentStamina > exhaustionThreshold)
+        if (amount <= 0f) return; 
+        float prev = currentStamina;//回復・消費前スタミナ
+        currentStamina = Mathf.Min(maxStamina, currentStamina + amount);//MaxStaminaをCurrentStamina+amountが超えないようにスタミナ上限管理。
+        if (IsExhausted && currentStamina > exhaustionThreshold)　　　　//IsExhauted＝trueだが、回復が進み境界線を越えた場合。
         {
             IsExhausted = false;
-            OnRecovered?.Invoke();
+            OnRecovered?.Invoke();　//Onrecoverd（Action箱）がnullじゃなければ、まとめて実行（Invoke）
         }
-        if (prev != currentStamina) UpdateUI();
+        if (prev != currentStamina) UpdateUI();//回復後のスタミナとしてUpdateUI（）へ返す。
     }
 
-    private void CheckExhaustion()
+    private void CheckExhaustion()　//疲労状態かどうか、境界線よりCurrentStaminaが下回った場合、IsExhauted（疲労状態）がtrueになる。
     {
         if (!IsExhausted && currentStamina <= exhaustionThreshold)
         {
@@ -77,7 +85,22 @@ public class PlayerStamina : MonoBehaviour
 
     private void UpdateUI()
     {
-        if (staminaSlider != null)
-            staminaSlider.value = GetStaminaNormalized();
+        if (staminaSlider != null)//Sliderがnullでなければ、実行
+            staminaSlider.value = GetStaminaNormalized();//Regenerate・Drainからの計算内容を正規化。
     }
 }
+
+//Awake()
+//CurrentStamina＝Max
+//↓
+//PlayerController.cs 
+//加速→Drain呼び出し　減速→Regenerate呼び出し
+//↓
+//UpdateUI（）
+//Drain・Regenerateの計算内容を取得。
+//↓
+//Update（）
+//計算内容を正規化
+//↓
+//UpdateUI（）
+//PlayerStaminaUI.csが計算内容を取得しに来る。
